@@ -72,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   InkWell(
                     onTap: () {
-                      // Get.toNamed('/addData');
+                      Get.toNamed('/transaction');
                     },
                     child: buildCard("Transactions", Icons.account_balance_sharp, ColorManager.whiteColor),
                   ),
@@ -86,12 +86,27 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             buildSpaceVertical(height * 0.02),
-            InkWell(
-              onTap: () {
-                // Get.toNamed('/addData');
-              },
-              child: Center(child: buildCard("Pending\nUsers", Icons.person_pin_sharp, ColorManager.whiteColor)),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppPadding.p22),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  InkWell(
+                    onTap: () {
+                      Get.toNamed('/pending');
+                    },
+                    child: Center(child: buildCard("Pending\nUsers", Icons.person_pin_sharp, ColorManager.whiteColor)),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      Get.toNamed('/approved');
+                    },
+                    child: Center(child: buildCard("Approved\nUsers", Icons.person_pin_sharp, ColorManager.whiteColor)),
+                  ),
+                ],
+              ),
             ),
+
           ],
         ),
       ),

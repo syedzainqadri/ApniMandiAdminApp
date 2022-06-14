@@ -37,4 +37,28 @@ class MandiController extends GetxController {
     return null;
   }
 
+  Future<List<MandiListModel>?> getMandiDataByDistrict(String districtId) async {
+    isLoading.value = true;
+    var val = await FirebaseFirestore.instance.collection("mandi").where('districtId', isEqualTo: districtId).get();
+    var documents = val.docs;
+    List<MandiListModel> cityList = [];
+    if (documents.isNotEmpty) {
+      try {
+        final data = documents.map((doc) => doc.data()).toList();
+        for(int i=0; i<data.length; i++){
+          cityList.add(MandiListModel.fromJson(Map<String, dynamic>.from(data[i])));
+        }
+        isLoading.value = false;
+        return cityList;
+      } catch (e) {
+        isLoading.value = false;
+        errorToast("Error", e.toString());
+        return null;
+      }
+    }
+    isLoading.value = false;
+    errorToast("Error", "No Mandi Available");
+    return null;
+  }
+
 }

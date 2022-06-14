@@ -33,7 +33,7 @@ class _AddCityDialogState extends State<AddCityDialog> {
         borderRadius: BorderRadius.circular(15.0),
       ),
       child: SizedBox(
-        height: height * 0.25,
+        height: height * 0.28,
         width: width * 0.8,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

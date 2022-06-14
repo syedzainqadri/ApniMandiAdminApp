@@ -6,7 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../constants/color_manager.dart';
 import '../constants/text_helper.dart';
+import '../controllers/user_profile_controller.dart';
 import '../controllers/users_controller.dart';
+import '../models/user_profile_model.dart';
+import 'profile_screen.dart';
 
 class UsersScreen extends StatefulWidget {
   const UsersScreen({Key? key}) : super(key: key);
@@ -17,8 +20,10 @@ class UsersScreen extends StatefulWidget {
 
 class _UsersScreenState extends State<UsersScreen> {
 
-  final UsersController _eventController = Get.put(UsersController());
-  List<UsersModel> eventModel = [];
+  final UsersController _usersController = Get.put(UsersController());
+  List<UsersModel> userModel = [];
+  final UserProfileController _userProfileController = Get.put(UserProfileController());
+  UserProfileModel? usersProfileModel;
 
   @override
   void initState() {
@@ -28,7 +33,7 @@ class _UsersScreenState extends State<UsersScreen> {
   }
 
   getData() async {
-    eventModel = (await _eventController.getUsersData())!;
+    userModel = (await _usersController.getUsersData())!;
     setState(() {});
   }
 
@@ -41,14 +46,22 @@ class _UsersScreenState extends State<UsersScreen> {
         title: textStyle2(text: 'All Users', color: ColorManager.whiteColor),
         centerTitle: true,
         iconTheme: const IconThemeData(color: ColorManager.whiteColor),
+        actions: [
+          IconButton(
+            onPressed: (){
+              Get.toNamed('/searchView');
+            },
+            icon: const Icon(Icons.search, color: ColorManager.whiteColor),
+          ),
+        ],
       ),
       body: Obx((){
-        return _eventController.isLoading.isTrue ? const Center(child: CircularProgressIndicator())
+        return _usersController.isLoading.isTrue ? const Center(child: CircularProgressIndicator())
             :
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: AppPadding.p12, vertical: AppPadding.p12),
               child: ListView.separated(
-                  itemCount: eventModel.length,
+                  itemCount: userModel.length,
                   itemBuilder: (context, index) {
                     return ListTile(
                       leading: const CircleAvatar(
@@ -56,8 +69,14 @@ class _UsersScreenState extends State<UsersScreen> {
                         backgroundColor: ColorManager.whiteColor,
                         radius: 30,
                       ),
-                      title: textStyle3(text: eventModel[index].name!),
-                      subtitle: textStyle1(text: eventModel[index].email!),
+                      title: textStyle3(text: userModel[index].name!),
+                      subtitle: textStyle1(text: userModel[index].email!),
+                      onTap: () async{
+                        usersProfileModel = await _userProfileController.getUserDataById(userModel[index].userId!);
+                        if(usersProfileModel != null){
+                          Get.to(ProfileScreen(userProfileModel: usersProfileModel!, isApprove: false));
+                        }
+                      },
                     );
                   },
                 separatorBuilder: (BuildContext context, int index) {

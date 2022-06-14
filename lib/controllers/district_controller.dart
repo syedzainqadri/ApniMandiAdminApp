@@ -37,4 +37,28 @@ class DistrictController extends GetxController {
     return null;
   }
 
+  Future<List<DistrictModel>?> getAllDistricts() async {
+    isLoading.value = true;
+    var val = await FirebaseFirestore.instance.collection("districts").get();
+    var documents = val.docs;
+    List<DistrictModel> districtList = [];
+    if (documents.isNotEmpty) {
+      try {
+        final data = documents.map((doc) => doc.data()).toList();
+        for(int i=0; i<data.length; i++){
+          districtList.add(DistrictModel.fromJson(Map<String, dynamic>.from(data[i])));
+        }
+        isLoading.value = false;
+        return districtList;
+      } catch (e) {
+        isLoading.value = false;
+        errorToast("Error", e.toString());
+        return null;
+      }
+    }
+    isLoading.value = false;
+    errorToast("Error", "No District Available");
+    return null;
+  }
+
 }

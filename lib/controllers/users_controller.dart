@@ -8,7 +8,6 @@ import '../constants/helper.dart';
 class UsersController extends GetxController {
 
   var isLoading = false.obs;
-  String? id;
   bool get loadingStatus => isLoading.value;
 
 
@@ -34,6 +33,26 @@ class UsersController extends GetxController {
     isLoading.value = false;
     errorToast("Error", "No User Available");
     return null;
+  }
+
+  Future<UsersModel?> getUserData(String id) async {
+    isLoading.value = true;
+    var val = await FirebaseFirestore.instance.collection("usersAuthData").doc(id).get();
+    var documents = val.data();
+    if (documents != null) {
+      try {
+        UsersModel userData = UsersModel.fromJson(Map<String, dynamic>.from(documents));
+        isLoading.value = false;
+        return userData;
+      } catch (e) {
+        isLoading.value = false;
+        return null;
+      }
+    }else{
+      isLoading.value = false;
+      return null;
+    }
+
   }
 
 }
