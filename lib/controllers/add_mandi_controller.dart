@@ -13,13 +13,12 @@ class AddMandiController extends GetxController {
   var isLoading = false.obs;
   bool get loadingStatus => isLoading.value;
 
-  addMandi(String mandiName, String cityId, districtId, provinceId) async {
+  addMandi(String mandiName, districtId, provinceId) async {
     isLoading.value = true;
     try{
       DocumentReference ref = FirebaseFirestore.instance.collection("mandi").doc();
       await FirebaseFirestore.instance.collection('mandi').doc(ref.id).set({
         "id": ref.id,
-        "cityId": cityId,
         "districtId": districtId,
         "provinceId": provinceId,
         "mandiName": mandiName,

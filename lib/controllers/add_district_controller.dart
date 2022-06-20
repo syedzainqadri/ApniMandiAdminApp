@@ -21,7 +21,7 @@ class AddDistrictController extends GetxController {
         "districtName": districtName,
       });
       isLoading.value = false;
-      Get.offAllNamed('/home');
+      Get.offAllNamed('/addData');
     }catch(e){
       errorToast("Error", e.toString());
       isLoading.value = false;

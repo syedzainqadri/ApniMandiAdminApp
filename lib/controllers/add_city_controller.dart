@@ -11,13 +11,12 @@ class AddCityController extends GetxController {
   var isLoading = false.obs;
   bool get loadingStatus => isLoading.value;
 
-  addCity(String cityName, districtId, provinceId) async {
+  addCity(String cityName, provinceId) async {
     isLoading.value = true;
     try{
       DocumentReference ref = FirebaseFirestore.instance.collection("cities").doc();
       await FirebaseFirestore.instance.collection('cities').doc(ref.id).set({
         "id": ref.id,
-        "districtId": districtId,
         "provinceId": provinceId,
         "cityName": cityName,
       });

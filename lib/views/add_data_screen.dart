@@ -3,15 +3,9 @@
 import 'package:apni_mandi_admin/constants/helper.dart';
 import 'package:apni_mandi_admin/constants/text_helper.dart';
 import 'package:apni_mandi_admin/controllers/add_mandi_controller.dart';
-import 'package:apni_mandi_admin/controllers/city_controller.dart';
 import 'package:apni_mandi_admin/controllers/district_controller.dart';
-import 'package:apni_mandi_admin/controllers/province_controller.dart';
-import 'package:apni_mandi_admin/models/city_model.dart';
 import 'package:apni_mandi_admin/models/district_model.dart';
-import 'package:apni_mandi_admin/models/province_model.dart';
-import 'package:apni_mandi_admin/views/widgets/add_city_dialog.dart';
 import 'package:apni_mandi_admin/views/widgets/add_district_dialog.dart';
-import 'package:apni_mandi_admin/views/widgets/add_province_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../constants/color_manager.dart';
@@ -30,26 +24,22 @@ class _AddDataScreenState extends State<AddDataScreen> {
   double height = Get.height;
   double width = Get.width;
   final mandiController = TextEditingController();
-  String? selectedProvince;
+  final provinceController = TextEditingController();
   String? selectedDistrict;
-  String? selectedCity;
 
   final AddMandiController addMandiController = Get.put(AddMandiController());
-  final ProvinceController _provinceController = Get.put(ProvinceController());
-  List<ProvinceModel> provinceModel = [];
   final DistrictController _districtController = Get.put(DistrictController());
   List<DistrictModel> districtsModel = [];
-  final CityController _cityController = Get.put(CityController());
-  List<CityModel> cityModel = [];
 
   @override
   void initState() {
     super.initState();
+    provinceController.text = "Punjab";
     getData();
   }
 
   getData() async {
-    provinceModel = (await _provinceController.getProvinceData())!;
+    districtsModel = (await _districtController.getDistrictData("hg2DafGskHF3U3Jvfzst"))!;
     setState(() {});
   }
 
@@ -70,89 +60,13 @@ class _AddDataScreenState extends State<AddDataScreen> {
             buildSpaceVertical(height * 0.04),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: AppPadding.p12),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  textStyle2(text: "Provinces"),
-                  InkWell(
-                    onTap: (){
-                      showDialog(
-                        barrierColor: Colors.black26,
-                        context: context,
-                        builder: (context) {
-                          return const AddProvinceDialog();
-                        },
-                      );
-                    },
-                    child: Container(
-                      height: height * 0.04,
-                      width: width * 0.35,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(AppSize.s16),
-                        color: ColorManager.primaryColor,
-                      ),
-                      child: Center(child: textStyle1(text: 'Add Province', color: ColorManager.whiteColor)),
-                    ),
-                  ),
-                ],
-              ),
+              child: textStyle2(text: "Province"),
             ),
             buildSpaceVertical(height * 0.02),
-            Obx((){
-              if(_provinceController.isLoading.value){
-                return const Center(child: CircularProgressIndicator());
-              }else {
-                return provinceModel.isNotEmpty ?
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: DropdownButtonFormField(
-                    isExpanded: true,
-                    decoration:  const InputDecoration(
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(AppSize.s10)),
-                        borderSide: BorderSide(color: ColorManager.grayColor),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(AppSize.s10)),
-                        borderSide: BorderSide(color: ColorManager.blackColor),
-                      ),
-                      errorBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(AppSize.s10)),
-                        borderSide: BorderSide(color: ColorManager.redColor),
-                      ),
-                      focusedErrorBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(AppSize.s10)),
-                        borderSide: BorderSide(color: ColorManager.redColor),
-                      ),
-                      disabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(AppSize.s10)),
-                        borderSide: BorderSide(color: ColorManager.whiteColor),
-                      ),
-                      filled: true,
-                      fillColor: ColorManager.whiteColor,
-                    ),
-                    validator: (value) => value == null ?  "Select Province": null,
-                    dropdownColor: ColorManager.whiteColor,
-                    hint: const Text("Select Province", style: TextStyle(fontSize: 12)),
-                    value: selectedProvince,
-                    onChanged: (String? newValue) async {
-                      setState(() {
-                        selectedProvince = newValue!;
-                      });
-                      districtsModel = (await _districtController.getDistrictData(selectedProvince!))!;
-
-                    },
-                    items: provinceModel.map((ProvinceModel map) {
-                      return DropdownMenuItem(
-                        value: map.id,
-                        child: Text(map.provinceName ?? "", style: const TextStyle(fontSize: 12)),
-                      );
-                    }).toList(),
-                  ),
-                )
-                : Center(child: textStyle2(text: 'No Province Available'));
-              }
-            }),
+            CustomTextField(
+                controller: provinceController,
+                isEnable: false
+            ),
 
             buildSpaceVertical(height * 0.04),
             Padding(
@@ -163,17 +77,13 @@ class _AddDataScreenState extends State<AddDataScreen> {
                   textStyle2(text: "Districts"),
                   InkWell(
                     onTap: (){
-                      if(selectedProvince != null){
-                        showDialog(
-                          barrierColor: Colors.black26,
-                          context: context,
-                          builder: (context) {
-                            return AddDistrictDialog(provinceId: selectedProvince!);
-                          },
-                        );
-                      }else{
-                        errorToast("Error", "Select Province First");
-                      }
+                      showDialog(
+                        barrierColor: Colors.black26,
+                        context: context,
+                        builder: (context) {
+                          return const AddDistrictDialog(provinceId: "hg2DafGskHF3U3Jvfzst");
+                        },
+                      );
 
                     },
                     child: Container(
@@ -231,7 +141,6 @@ class _AddDataScreenState extends State<AddDataScreen> {
                       setState(() {
                         selectedDistrict = newValue!;
                       });
-                      cityModel = (await _cityController.getCityData(selectedDistrict!))!;
 
                     },
                     items: districtsModel.map((DistrictModel map) {
@@ -246,99 +155,96 @@ class _AddDataScreenState extends State<AddDataScreen> {
               }
             }),
 
-            buildSpaceVertical(height * 0.04),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppPadding.p12),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  textStyle2(text: "Cities"),
-                  InkWell(
-                    onTap: (){
-                      if(selectedProvince != null){
-                        if(selectedDistrict != null){
-                          showDialog(
-                            barrierColor: Colors.black26,
-                            context: context,
-                            builder: (context) {
-                              return AddCityDialog(provinceId: selectedProvince!, districtId: selectedDistrict!,);
-                            },
-                          );
-                        }else{
-                          errorToast("Error", "Select District First");
-                        }
-                      }else{
-                        errorToast("Error", "Select Province First");
-                      }
-                    },
-                    child: Container(
-                      height: height * 0.04,
-                      width: width * 0.35,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(AppSize.s16),
-                        color: ColorManager.primaryColor,
-                      ),
-                      child: Center(child: textStyle1(text: 'Add City', color: ColorManager.whiteColor)),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            buildSpaceVertical(height * 0.02),
-            Obx((){
-              if(_cityController.isLoading.value){
-                return const Center(child: CircularProgressIndicator());
-              }else {
-                return cityModel.isNotEmpty ?
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: DropdownButtonFormField(
-                    isExpanded: true,
-                    decoration:  const InputDecoration(
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(AppSize.s10)),
-                        borderSide: BorderSide(color: ColorManager.grayColor),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(AppSize.s10)),
-                        borderSide: BorderSide(color: ColorManager.blackColor),
-                      ),
-                      errorBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(AppSize.s10)),
-                        borderSide: BorderSide(color: ColorManager.redColor),
-                      ),
-                      focusedErrorBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(AppSize.s10)),
-                        borderSide: BorderSide(color: ColorManager.redColor),
-                      ),
-                      disabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(AppSize.s10)),
-                        borderSide: BorderSide(color: ColorManager.whiteColor),
-                      ),
-                      filled: true,
-                      fillColor: ColorManager.whiteColor,
-                    ),
-                    validator: (value) => value == null ?  "Select City": null,
-                    dropdownColor: ColorManager.whiteColor,
-                    hint: const Text("Select City", style: TextStyle(fontSize: 12)),
-                    value: selectedCity,
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        selectedCity = newValue!;
-                      });
-
-                    },
-                    items: cityModel.map((CityModel map) {
-                      return DropdownMenuItem(
-                        value: map.id,
-                        child: Text(map.cityName ?? "", style: const TextStyle(fontSize: 12)),
-                      );
-                    }).toList(),
-                  ),
-                )
-                    : Center(child: textStyle2(text: 'No City Available'));
-              }
-            }),
+            // buildSpaceVertical(height * 0.04),
+            // Padding(
+            //   padding: const EdgeInsets.symmetric(horizontal: AppPadding.p12),
+            //   child: Row(
+            //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //     children: [
+            //       textStyle2(text: "Cities"),
+            //       InkWell(
+            //         onTap: (){
+            //           if(selectedProvince != null){
+            //               showDialog(
+            //                 barrierColor: Colors.black26,
+            //                 context: context,
+            //                 builder: (context) {
+            //                   return AddCityDialog(provinceId: selectedProvince!);
+            //                 },
+            //               );
+            //
+            //           }else{
+            //             errorToast("Error", "Select Province First");
+            //           }
+            //         },
+            //         child: Container(
+            //           height: height * 0.04,
+            //           width: width * 0.35,
+            //           decoration: BoxDecoration(
+            //             borderRadius: BorderRadius.circular(AppSize.s16),
+            //             color: ColorManager.primaryColor,
+            //           ),
+            //           child: Center(child: textStyle1(text: 'Add City', color: ColorManager.whiteColor)),
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // ),
+            // buildSpaceVertical(height * 0.02),
+            // Obx((){
+            //   if(_cityController.isLoading.value){
+            //     return const Center(child: CircularProgressIndicator());
+            //   }else {
+            //     return cityModel.isNotEmpty ?
+            //     Padding(
+            //       padding: const EdgeInsets.symmetric(horizontal: 20),
+            //       child: DropdownButtonFormField(
+            //         isExpanded: true,
+            //         decoration:  const InputDecoration(
+            //           enabledBorder: OutlineInputBorder(
+            //             borderRadius: BorderRadius.all(Radius.circular(AppSize.s10)),
+            //             borderSide: BorderSide(color: ColorManager.grayColor),
+            //           ),
+            //           focusedBorder: OutlineInputBorder(
+            //             borderRadius: BorderRadius.all(Radius.circular(AppSize.s10)),
+            //             borderSide: BorderSide(color: ColorManager.blackColor),
+            //           ),
+            //           errorBorder: OutlineInputBorder(
+            //             borderRadius: BorderRadius.all(Radius.circular(AppSize.s10)),
+            //             borderSide: BorderSide(color: ColorManager.redColor),
+            //           ),
+            //           focusedErrorBorder: OutlineInputBorder(
+            //             borderRadius: BorderRadius.all(Radius.circular(AppSize.s10)),
+            //             borderSide: BorderSide(color: ColorManager.redColor),
+            //           ),
+            //           disabledBorder: OutlineInputBorder(
+            //             borderRadius: BorderRadius.all(Radius.circular(AppSize.s10)),
+            //             borderSide: BorderSide(color: ColorManager.whiteColor),
+            //           ),
+            //           filled: true,
+            //           fillColor: ColorManager.whiteColor,
+            //         ),
+            //         validator: (value) => value == null ?  "Select City": null,
+            //         dropdownColor: ColorManager.whiteColor,
+            //         hint: const Text("Select City", style: TextStyle(fontSize: 12)),
+            //         value: selectedCity,
+            //         onChanged: (String? newValue) {
+            //           setState(() {
+            //             selectedCity = newValue!;
+            //           });
+            //
+            //         },
+            //         items: cityModel.map((CityModel map) {
+            //           return DropdownMenuItem(
+            //             value: map.id,
+            //             child: Text(map.cityName ?? "", style: const TextStyle(fontSize: 12)),
+            //           );
+            //         }).toList(),
+            //       ),
+            //     )
+            //         : Center(child: textStyle2(text: 'No City Available'));
+            //   }
+            // }),
 
 
             buildSpaceVertical(height * 0.04),
@@ -355,23 +261,15 @@ class _AddDataScreenState extends State<AddDataScreen> {
             Center(
               child: InkWell(
                 onTap: (){
-                  if(selectedProvince != null){
                     if(selectedDistrict != null){
-                      if(selectedCity != null){
                         if(mandiController.text.isNotEmpty){
-                          addMandiController.addMandi(mandiController.text.trim(), selectedCity!, selectedDistrict!, selectedProvince!);
+                          addMandiController.addMandi(mandiController.text.trim(), selectedDistrict!, "hg2DafGskHF3U3Jvfzst");
                         }else{
                           errorToast("Error", "Select City First");
                         }
-                      }else{
-                        errorToast("Error", "Select City First");
-                      }
                     }else{
                       errorToast("Error", "Select District First");
                     }
-                  }else{
-                    errorToast("Error", "Select Province First");
-                  }
                 },
                 child: Container(
                     height: height * 0.05,
@@ -387,7 +285,6 @@ class _AddDataScreenState extends State<AddDataScreen> {
                 ),
               ),
             ),
-
 
             buildSpaceVertical(height * 0.04),
           ],

@@ -10,8 +10,8 @@ import '../../constants/values_manager.dart';
 import '../../globalWidgets/text_field.dart';
 
 class AddCityDialog extends StatefulWidget {
-  final String provinceId, districtId;
-  const AddCityDialog({Key? key, required this.provinceId, required this.districtId}) : super(key: key);
+  final String provinceId;
+  const AddCityDialog({Key? key, required this.provinceId}) : super(key: key);
 
   @override
   State<AddCityDialog> createState() => _AddCityDialogState();
@@ -50,7 +50,7 @@ class _AddCityDialogState extends State<AddCityDialog> {
             Center(
               child: InkWell(
                 onTap: (){
-                  addCityController.addCity(cityController.text.trim(), widget.districtId, widget.provinceId);
+                  addCityController.addCity(cityController.text.trim(), widget.provinceId);
                 },
                 child: Container(
                     height: height * 0.05,
