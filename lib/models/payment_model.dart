@@ -1,5 +1,3 @@
-
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PaymentModel {
@@ -9,7 +7,8 @@ class PaymentModel {
   String? approved;
   String? userName;
 
-  PaymentModel({this.userId, this.phoneNo, this.transID, this.approved, this.userName });
+  PaymentModel(
+      {this.userId, this.phoneNo, this.transID, this.approved, this.userName});
 
   factory PaymentModel.fromDocument(DocumentSnapshot doc) {
     return PaymentModel(
@@ -28,5 +27,4 @@ class PaymentModel {
     approved = json['approved'];
     userName = json['userName'];
   }
-
 }

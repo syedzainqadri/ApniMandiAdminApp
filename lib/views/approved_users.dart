@@ -80,7 +80,7 @@ class _ApprovedUsersScreenState extends State<ApprovedUsersScreen> {
                 title: textStyle3(text: approvedModel[index].firstName! +' '+ approvedModel[index].lastName!),
                 subtitle: textStyle1(text: approvedModel[index].email!),
                 onTap: (){
-                  Get.to(ProfileScreen(userProfileModel: approvedModel[index], isApprove: false));
+                  Get.to(ProfileScreen(userProfileModel: approvedModel[index], isApprove: true));
                 },
               );
             },
