@@ -1,8 +1,7 @@
-
-
 import 'package:apni_mandi_admin/constants/values_manager.dart';
 import 'package:apni_mandi_admin/controllers/mandi_controller.dart';
 import 'package:apni_mandi_admin/models/mandilist_model.dart';
+import 'package:apni_mandi_admin/views/mandi_details.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../constants/color_manager.dart';
@@ -16,7 +15,6 @@ class MandiListScreen extends StatefulWidget {
 }
 
 class _MandiListScreenState extends State<MandiListScreen> {
-
   final MandiController _mandiController = Get.put(MandiController());
   List<MandiListModel> mandiModel = [];
 
@@ -42,31 +40,37 @@ class _MandiListScreenState extends State<MandiListScreen> {
         centerTitle: true,
         iconTheme: const IconThemeData(color: ColorManager.whiteColor),
       ),
-      body: Obx((){
-        return _mandiController.isLoading.isTrue ? const Center(child: CircularProgressIndicator())
-            :
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppPadding.p12, vertical: AppPadding.p12),
-          child: ListView.separated(
-            itemCount: mandiModel.length,
-            itemBuilder: (context, index) {
-              return ListTile(
-                leading: const CircleAvatar(
-                  backgroundImage: AssetImage('assets/logo.png'),
-                  backgroundColor: ColorManager.whiteColor,
-                  radius: 30,
+      body: Obx(() {
+        return _mandiController.isLoading.isTrue
+            ? const Center(child: CircularProgressIndicator())
+            : Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: AppPadding.p12, vertical: AppPadding.p12),
+                child: ListView.separated(
+                  itemCount: mandiModel.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      leading: const CircleAvatar(
+                        backgroundImage: AssetImage('assets/logo.png'),
+                        backgroundColor: ColorManager.whiteColor,
+                        radius: 30,
+                      ),
+                      title: textStyle3(text: mandiModel[index].mandiName!),
+                      onTap: () {
+                        Get.to(MandiDetails(
+                          mandiDetails: mandiModel[index],
+                        ));
+                      },
+                    );
+                  },
+                  separatorBuilder: (BuildContext context, int index) {
+                    return const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: AppPadding.p26),
+                      child: Divider(color: ColorManager.blackColor),
+                    );
+                  },
                 ),
-                title: textStyle3(text: mandiModel[index].mandiName!),
               );
-            },
-            separatorBuilder: (BuildContext context, int index) {
-              return const Padding(
-                padding: EdgeInsets.symmetric(horizontal: AppPadding.p26),
-                child: Divider(color: ColorManager.blackColor),
-              );
-            },
-          ),
-        );
       }),
     );
   }

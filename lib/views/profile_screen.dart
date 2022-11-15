@@ -188,30 +188,45 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         child: Switch(
                           value: value,
                           onChanged: (onChanged) {
-                            setState(() {
+                            setState(() async {
                               value = onChanged;
                               print(value);
                               if (value == 'true') {
-                                widget.userProfileModel.approved = 'approved';
+                                await FirebaseFirestore.instance
+                                    .collection('usersPersonalData')
+                                    .doc(widget.userProfileModel.userId)
+                                    .update({
+                                  "id": widget.userProfileModel.userId,
+                                  "firstName":
+                                      widget.userProfileModel.firstName,
+                                  "lastName": widget.userProfileModel.lastName,
+                                  "userName": widget.userProfileModel.firstName,
+                                  "email": widget.userProfileModel..email,
+                                  "phoneNo": widget.userProfileModel.phoneNo,
+                                  "cnicNo": widget.userProfileModel.cnicNo,
+                                  "province": widget.userProfileModel.province,
+                                  "city": widget.userProfileModel.city,
+                                  "address": widget.userProfileModel.address,
+                                  "mclNo": widget.userProfileModel.mcln,
+                                  "approved": "approved",
+                                  "image": widget.userProfileModel.profileImage,
+                                });
+                                // userProfileController.updateProfileData(
+                                //     widget.userProfileModel.userId!,
+                                //     widget.userProfileModel.firstName!,
+                                //     widget.userProfileModel.lastName!,
+                                //     widget.userProfileModel.email!,
+                                //     widget.userProfileModel.phoneNo!,
+                                //     widget.userProfileModel.cnicNo!,
+                                //     widget.userProfileModel.province!,
+                                //     widget.userProfileModel.city!,
+                                //     widget.userProfileModel.address!,
+                                //     widget.userProfileModel.mcln!,
+                                //     widget.userProfileModel.profileImage!);
                               } else {
                                 widget.userProfileModel.approved = '';
                               }
-
-                              //   userProfileController.updateProfileData(
-                              //       widget.userProfileModel.userId!,
-                              //       widget.userProfileModel.firstName!,
-                              //       widget.userProfileModel.lastName!,
-                              //       widget.userProfileModel.email!,
-                              //       widget.userProfileModel.phoneNo!,
-                              //       widget.userProfileModel.cnicNo!,
-                              //       widget.userProfileModel.province!,
-                              //       widget.userProfileModel.city!,
-                              //       widget.userProfileModel.address!,
-                              //       widget.userProfileModel.mcln!,
-                              //       widget.userProfileModel.profileImage!);
-                              //   setState(() {
-                              //
-                              //   });
+                              print(widget.userProfileModel.approved);
                             });
                           },
                           activeColor: ColorManager.primaryColor,

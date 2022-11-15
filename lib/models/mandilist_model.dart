@@ -1,15 +1,12 @@
-
-
 class MandiListModel {
-
   String? id;
   String? mandiName;
   String? provinceId;
   String? districtId;
   String? cityId;
 
-
-  MandiListModel({this.id, this.mandiName, this.provinceId, this.districtId, this.cityId});
+  MandiListModel(
+      {this.id, this.mandiName, this.provinceId, this.districtId, this.cityId});
 
   factory MandiListModel.fromJson(Map<String, dynamic> data) {
     return MandiListModel(
@@ -20,5 +17,4 @@ class MandiListModel {
       cityId: data['cityId'],
     );
   }
-
 }
